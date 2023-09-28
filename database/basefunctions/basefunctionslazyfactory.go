@@ -39,8 +39,20 @@ func (u *baseFunctions) GetFunctions(dbType basetypes.DbType, dbName basetypes.D
 			return u.dbfunctions[dbType], nil
 		}
 	case basetypes.FILE:
-		{ //Adding this because ken wants to use framework for IOT
-			return nil, errors.New("Unimplemented")
+		{
+			connection := FileFunctions{}
+			functionsInterface := connection.GetFunctions()
+
+			u.dbfunctions[dbType] = &functionsInterface
+			return u.dbfunctions[dbType], nil
+		}
+	case basetypes.MEMORY:
+		{
+			connection := MemoryFunctions{}
+			functionsInterface := connection.GetFunctions()
+
+			u.dbfunctions[dbType] = &functionsInterface
+			return u.dbfunctions[dbType], nil
 		}
 	}
 	return nil, errors.New("Not configured for this db")

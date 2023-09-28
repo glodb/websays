@@ -1,7 +1,10 @@
 package basecontrollers
 
 import (
+	"log"
 	"sync"
+	"websays/app/controllers"
+	"websays/app/validators"
 	"websays/config"
 	"websays/database/basefunctions"
 	"websays/database/basetypes"
@@ -45,21 +48,26 @@ func (c *controllersObject) GetController(controllerType string) (baseinterfaces
 func (c *controllersObject) RegisterControllers() {
 	localControllers := config.GetInstance().Controllers
 	for i := range localControllers {
+		log.Println(localControllers[i])
 		c.registerControllers(localControllers[i], true)
 	}
 }
 
 func (c *controllersObject) registerControllers(key string, registerApis bool) {
+	var funcs *basefunctions.BaseFucntionsInterface
 	switch key {
-	// case User:
-	// 	c.controllers[key] = &controllers.UserController{BaseControllerFactory: c, ValidatorInterface: &validators.UserValidator{}}
-	// case Session:
-	// 	c.controllers[key] = &controllers.SessionController{BaseControllerFactory: c, ValidatorInterface: &validators.SessionValidator{}}
-	// case Templates:
-	// 	c.controllers[key] = &controllers.TemplatesController{BaseControllerFactory: c, ValidatorInterface: &validators.SessionValidator{}}
+	case Article:
+		c.controllers[key] = &controllers.Article{BaseControllerFactory: c, ValidatorInterface: &validators.ArticleValidator{}}
+		funcs, _ = basefunctions.GetInstance().GetFunctions(basetypes.MEMORY, c.controllers[key].GetDBName())
+	case Category:
+		c.controllers[key] = &controllers.Category{BaseControllerFactory: c, ValidatorInterface: &validators.CategoryValidator{}}
+		funcs, _ = basefunctions.GetInstance().GetFunctions(basetypes.FILE, c.controllers[key].GetDBName())
+	case Product:
+		c.controllers[key] = &controllers.Product{BaseControllerFactory: c, ValidatorInterface: &validators.ProductValidator{}}
+		funcs, _ = basefunctions.GetInstance().GetFunctions(basetypes.MYSQL, c.controllers[key].GetDBName())
 
 	}
-	funcs, _ := basefunctions.GetInstance().GetFunctions(basetypes.MYSQL, c.controllers[key].GetDBName())
+	log.Println(*funcs)
 	c.controllers[key].SetBaseFunctions(*funcs)
 	c.controllers[key].DoIndexing()
 	if registerApis {

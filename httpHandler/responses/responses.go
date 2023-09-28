@@ -7,29 +7,16 @@ import (
 )
 
 const (
-	WELCOME_TO_SSO         = 1000
+	WEBSAYS_TEST           = 1000
 	API_NOT_AVAILABLE      = 1001
 	OPTIONS_NOT_ALLOWED    = 1002
-	CREATE_SESSION_SUCCESS = 1003
-	GENERATING_UUID_FAILED = 1004
-	REGISTER_USER_SUCCESS  = 1005
-	SESSION_ID_NOT_PRESENT = 1006
-	SESSION_NOT_VALID      = 1007
-	CREATE_SESSION_FAILED  = 1008
-	MALFORMED_JSON         = 1009
-	VALIDATION_FAILED      = 1010
-	DB_ERROR               = 1011
-	CREATE_HASH_FAILED     = 1012
-	BASIC_AUTH_FAILED      = 1013
-	GET_USER_SUCCESS       = 1014
-	GET_USER_FAILED        = 1015
-	USERNAME_EXISTS_FAILED = 1016
-	PASSWORD_INCORRECT     = 1017
-	LOGIN_SUCCESS          = 1018
-	UPDATE_FAILED          = 1019
-	UPDATE_SUCCESS         = 1020
-	LOGOUT_SUCCESS         = 1021
-	LOGOUT_FAILED          = 1022
+	MALFORMED_JSON         = 1003
+	VALIDATION_FAILED      = 1004
+	ADDING_DB_FAILED       = 1005
+	ADD_ARTICLE_SUCCESS    = 1006
+	READ_ARTICLE_SUCCESS   = 1007
+	DELETE_ARTICLE_SUCCESS = 1008
+	UPDATE_ARTICLE_SUCCESS = 1009
 )
 
 type Responses struct {
@@ -54,26 +41,16 @@ func GetInstance() *Responses {
 // InitResponses function just initialise the response headers to be sent
 func (u *Responses) InitResponses() {
 	u.responses = make(map[int]string)
-	u.responses[WELCOME_TO_SSO] = "Welcome to SSO"
+	u.responses[WEBSAYS_TEST] = "Websays API's"
 	u.responses[API_NOT_AVAILABLE] = "The Api is not available on current server"
 	u.responses[OPTIONS_NOT_ALLOWED] = "Options are not allowed"
-	u.responses[CREATE_SESSION_SUCCESS] = "Creating session successful"
-	u.responses[GENERATING_UUID_FAILED] = "Generating UUID failed"
-	u.responses[SESSION_ID_NOT_PRESENT] = "Session id is not present in header"
-	u.responses[SESSION_NOT_VALID] = "Session not valid"
-	u.responses[REGISTER_USER_SUCCESS] = "Register user success"
-	u.responses[MALFORMED_JSON] = "Json Decoding failed"
-	u.responses[VALIDATION_FAILED] = "Validation failed"
-	u.responses[DB_ERROR] = "DB Error in query"
-	u.responses[CREATE_HASH_FAILED] = "Failed creating hash"
-	u.responses[BASIC_AUTH_FAILED] = "Basic auth failed"
-	u.responses[GET_USER_SUCCESS] = "Success in getting user"
-	u.responses[GET_USER_FAILED] = "Failure in getting user"
-	u.responses[USERNAME_EXISTS_FAILED] = "Username entered does not exist"
-	u.responses[PASSWORD_INCORRECT] = "Password is incorrect"
-	u.responses[LOGIN_SUCCESS] = "Login Success"
-	u.responses[UPDATE_FAILED] = "Updation Failed"
-	u.responses[UPDATE_SUCCESS] = "Updateion Success"
+	u.responses[MALFORMED_JSON] = "Json is not correctly formed"
+	u.responses[VALIDATION_FAILED] = "Failure in validation"
+	u.responses[ADD_ARTICLE_SUCCESS] = "Adding article success"
+	u.responses[ADDING_DB_FAILED] = "Adding DB Failed"
+	u.responses[READ_ARTICLE_SUCCESS] = "Reading Article success"
+	u.responses[DELETE_ARTICLE_SUCCESS] = "Deleting article success"
+	u.responses[UPDATE_ARTICLE_SUCCESS] = "Update article success"
 }
 
 // GetResponse returns the message for the particular response code
@@ -98,10 +75,15 @@ func (u *Responses) WriteJsonResponse(w http.ResponseWriter, r *http.Request, co
 
 	w.WriteHeader(status)
 
+	if err != nil {
+		returnMap["error"] = err.Error()
+	}
+	if data != nil {
+		returnMap["data"] = data
+	}
 	err = json.NewEncoder(w).Encode(returnMap)
 	if err != nil {
 		http.Error(w, "Error encoding JSON", http.StatusInternalServerError)
 		return
 	}
-
 }

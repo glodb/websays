@@ -46,7 +46,12 @@ func (u *MySqlFunctions) EnsureIndex(dbName basetypes.DBName, collectionName bas
 	return err
 }
 
+func (u *MySqlFunctions) GetNextID() int {
+	return 0
+}
+
 func (u *MySqlFunctions) Add(dbName basetypes.DBName, collectionName basetypes.CollectionName, data interface{}) error {
+	log.Println("MySql add")
 	conn := baseconnections.GetInstance().GetConnection(basetypes.MYSQL).GetDB(basetypes.MYSQL).(*sql.DB)
 	query := "INSERT INTO " + string(collectionName)
 
@@ -82,8 +87,9 @@ func (u *MySqlFunctions) Add(dbName basetypes.DBName, collectionName basetypes.C
 	_, err := conn.Exec(query, values...)
 	return err
 }
-func (u *MySqlFunctions) FindOne(dbName basetypes.DBName, collectionName basetypes.CollectionName, condition map[string]interface{}, result interface{}) (interface{}, error) {
+func (u *MySqlFunctions) FindOne(dbName basetypes.DBName, collectionName basetypes.CollectionName, cond interface{}) (interface{}, error) {
 
+	condition := cond.(map[string]interface{})
 	conn := baseconnections.GetInstance().GetConnection(basetypes.MYSQL).GetDB(basetypes.MYSQL).(*sql.DB)
 	query := "SELECT * FROM " + string(collectionName)
 
@@ -105,9 +111,9 @@ func (u *MySqlFunctions) FindOne(dbName basetypes.DBName, collectionName basetyp
 
 	return rows, err
 }
-func (u *MySqlFunctions) UpdateOne(dbName basetypes.DBName, collectionName basetypes.CollectionName, query string, data []interface{}, upsert bool) error {
+func (u *MySqlFunctions) UpdateOne(dbName basetypes.DBName, collectionName basetypes.CollectionName, query string, data interface{}, upsert bool) error {
 	conn := baseconnections.GetInstance().GetConnection(basetypes.MYSQL).GetDB(basetypes.MYSQL).(*sql.DB)
-	_, err := conn.Exec(query, data...)
+	_, err := conn.Exec(query, data.([]interface{})...)
 	return err
 }
 func (u *MySqlFunctions) DeleteOne(dbName basetypes.DBName, collectionName basetypes.CollectionName, query interface{}) error {

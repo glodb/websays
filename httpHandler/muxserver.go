@@ -33,7 +33,7 @@ func GetInstance() *muxServer {
 }
 
 func (u *muxServer) HandleBlank(w http.ResponseWriter, r *http.Request) {
-	responses.GetInstance().WriteJsonResponse(w, r, responses.WELCOME_TO_SSO, nil, nil)
+	responses.GetInstance().WriteJsonResponse(w, r, responses.WEBSAYS_TEST, nil, nil)
 }
 
 func (u *muxServer) setup() {

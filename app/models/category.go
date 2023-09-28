@@ -1,6 +1,10 @@
 package models
 
 type Category struct {
-	ID   int
-	Name string
+	ID   int    `json:"id"`
+	Name string `json:"name"`
+}
+
+func (cat Category) GetID() int {
+	return cat.ID
 }

@@ -40,7 +40,23 @@ func (u *dbConnections) GetConnection(dbType basetypes.DbType) ConntectionInterf
 		}
 	case basetypes.FILE:
 		{ //Allowing multiple db connections, test didn't ask but just using factory
-			return nil
+			connection := FileConnection{}
+			fileconnector, err := connection.CreateConnection()
+			if err != nil {
+				return nil
+			}
+			u.dbconnections[dbType] = &fileconnector
+			return *u.dbconnections[dbType]
+		}
+	case basetypes.MEMORY:
+		{ //Allowing multiple db connections, test didn't ask but just using factory
+			connection := MemoryConnection{}
+			memoryconnector, err := connection.CreateConnection()
+			if err != nil {
+				return nil
+			}
+			u.dbconnections[dbType] = &memoryconnector
+			return *u.dbconnections[dbType]
 		}
 	}
 	return nil
