@@ -10,5 +10,7 @@
         "address": "localhost",
         "port": "8080"
       },
-    "controllers": ["Article", "Category", "Product"]
+    "controllers": ["Article", "Category", "Product"],
+    "filesPath":"files",
+    "runningFileName":".runningNumber"
 }

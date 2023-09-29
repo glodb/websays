@@ -10,10 +10,11 @@ import (
 )
 
 type config struct {
-	Server      configModels.ServerConfig   `json:"server"`
-	Database    configModels.DatabaseConfig `json:"database"`
-	Controllers []string                    `json:"controllers"`
-	SessionKey  string                      `json:"sessionKey"`
+	Server          configModels.ServerConfig   `json:"server"`
+	Database        configModels.DatabaseConfig `json:"database"`
+	FilePath        string                      `json:"filesPath"`
+	RunningFileName string                      `json:"runningFileName"`
+	Controllers     []string                    `json:"controllers"`
 }
 
 var (

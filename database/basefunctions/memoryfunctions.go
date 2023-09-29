@@ -36,6 +36,9 @@ func (u *MemoryFunctions) Add(dbName basetypes.DBName, collectionName basetypes.
 	idData := data.(basemodels.BaseModels)
 	u.lock.Lock()
 	defer u.lock.Unlock()
+	if _, ok := u.data[strconv.FormatInt(int64(idData.GetID()), 10)+"_"+string(collectionName)]; ok {
+		return errors.New("Id already exists")
+	}
 	u.data[strconv.FormatInt(int64(idData.GetID()), 10)+"_"+string(collectionName)] = idData
 	return nil
 }

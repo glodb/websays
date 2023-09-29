@@ -132,7 +132,7 @@ func (art *Article) HandleUpdateArticle(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	err = art.Add(art.GetDBName(), art.GetCollectionName(), article)
+	err = art.UpdateOne(art.GetDBName(), art.GetCollectionName(), "", article, false)
 	if err != nil {
 		responses.GetInstance().WriteJsonResponse(w, r, responses.VALIDATION_FAILED, err, nil)
 		return

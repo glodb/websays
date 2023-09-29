@@ -7,16 +7,20 @@ import (
 )
 
 const (
-	WEBSAYS_TEST           = 1000
-	API_NOT_AVAILABLE      = 1001
-	OPTIONS_NOT_ALLOWED    = 1002
-	MALFORMED_JSON         = 1003
-	VALIDATION_FAILED      = 1004
-	ADDING_DB_FAILED       = 1005
-	ADD_ARTICLE_SUCCESS    = 1006
-	READ_ARTICLE_SUCCESS   = 1007
-	DELETE_ARTICLE_SUCCESS = 1008
-	UPDATE_ARTICLE_SUCCESS = 1009
+	WEBSAYS_TEST            = 1000
+	API_NOT_AVAILABLE       = 1001
+	OPTIONS_NOT_ALLOWED     = 1002
+	MALFORMED_JSON          = 1003
+	VALIDATION_FAILED       = 1004
+	ADDING_DB_FAILED        = 1005
+	ADD_ARTICLE_SUCCESS     = 1006
+	READ_ARTICLE_SUCCESS    = 1007
+	DELETE_ARTICLE_SUCCESS  = 1008
+	UPDATE_ARTICLE_SUCCESS  = 1009
+	ADD_CATEGORY_SUCCESS    = 1010
+	READ_CATEGORY_SUCCESS   = 1011
+	UPDATE_CATEGORY_SUCCESS = 1012
+	DELETE_CATEGORY_SUCCESS = 1013
 )
 
 type Responses struct {
@@ -51,6 +55,10 @@ func (u *Responses) InitResponses() {
 	u.responses[READ_ARTICLE_SUCCESS] = "Reading Article success"
 	u.responses[DELETE_ARTICLE_SUCCESS] = "Deleting article success"
 	u.responses[UPDATE_ARTICLE_SUCCESS] = "Update article success"
+	u.responses[ADD_CATEGORY_SUCCESS] = "Adding category success"
+	u.responses[READ_CATEGORY_SUCCESS] = "Reading category success"
+	u.responses[UPDATE_CATEGORY_SUCCESS] = "Updating category success"
+	u.responses[DELETE_CATEGORY_SUCCESS] = "Deleting category success"
 }
 
 // GetResponse returns the message for the particular response code
