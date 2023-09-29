@@ -21,6 +21,10 @@ const (
 	READ_CATEGORY_SUCCESS   = 1011
 	UPDATE_CATEGORY_SUCCESS = 1012
 	DELETE_CATEGORY_SUCCESS = 1013
+	ADD_PRODUCT_SUCCESS     = 1010
+	READ_PRODUCT_SUCCESS    = 1011
+	UPDATE_PRODUCT_SUCCESS  = 1012
+	DELETE_PRODUCT_SUCCESS  = 1013
 )
 
 type Responses struct {
@@ -59,6 +63,10 @@ func (u *Responses) InitResponses() {
 	u.responses[READ_CATEGORY_SUCCESS] = "Reading category success"
 	u.responses[UPDATE_CATEGORY_SUCCESS] = "Updating category success"
 	u.responses[DELETE_CATEGORY_SUCCESS] = "Deleting category success"
+	u.responses[ADD_PRODUCT_SUCCESS] = "Adding product success"
+	u.responses[READ_PRODUCT_SUCCESS] = "Reading product success"
+	u.responses[UPDATE_PRODUCT_SUCCESS] = "Updating product success"
+	u.responses[DELETE_PRODUCT_SUCCESS] = "Deleting product success"
 }
 
 // GetResponse returns the message for the particular response code

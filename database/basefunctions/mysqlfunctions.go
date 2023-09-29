@@ -51,7 +51,6 @@ func (u *MySqlFunctions) GetNextID() int {
 }
 
 func (u *MySqlFunctions) Add(dbName basetypes.DBName, collectionName basetypes.CollectionName, data interface{}) error {
-	log.Println("MySql add")
 	conn := baseconnections.GetInstance().GetConnection(basetypes.MYSQL).GetDB(basetypes.MYSQL).(*sql.DB)
 	query := "INSERT INTO " + string(collectionName)
 
@@ -107,6 +106,7 @@ func (u *MySqlFunctions) FindOne(dbName basetypes.DBName, collectionName basetyp
 	}
 
 	query += whereClause
+	log.Println(query, values)
 	rows, err := conn.Query(query, values...)
 
 	return rows, err
