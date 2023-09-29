@@ -25,6 +25,7 @@ const (
 	READ_PRODUCT_SUCCESS    = 1011
 	UPDATE_PRODUCT_SUCCESS  = 1012
 	DELETE_PRODUCT_SUCCESS  = 1013
+	NO_PRDUCT_FOUND         = 1014
 )
 
 type Responses struct {
@@ -67,6 +68,7 @@ func (u *Responses) InitResponses() {
 	u.responses[READ_PRODUCT_SUCCESS] = "Reading product success"
 	u.responses[UPDATE_PRODUCT_SUCCESS] = "Updating product success"
 	u.responses[DELETE_PRODUCT_SUCCESS] = "Deleting product success"
+	u.responses[NO_PRDUCT_FOUND] = "No product found"
 }
 
 // GetResponse returns the message for the particular response code

@@ -128,7 +128,7 @@ func (u *FileFunctions) FindOne(dbName basetypes.DBName, collectionName basetype
 
 	return data, nil
 }
-func (u *FileFunctions) UpdateOne(dbName basetypes.DBName, collectionName basetypes.CollectionName, query string, data interface{}, upsert bool) error {
+func (u *FileFunctions) UpdateOne(dbName basetypes.DBName, collectionName basetypes.CollectionName, query interface{}, data interface{}, upsert bool) error {
 	idData := data.(basemodels.BaseModels)
 
 	filePath := config.GetInstance().FilePath + "/" + strconv.FormatInt(int64(idData.GetID()), 10) + "_" + string(collectionName)

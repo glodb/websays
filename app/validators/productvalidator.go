@@ -15,6 +15,13 @@ func (pro *ProductValidator) Validate(apiName string, data interface{}) error {
 		if proData.Name == "" {
 			return errors.New("Product Name can't be empty")
 		}
+	case "/api/updateProduct":
+		if proData.ID <= 0 {
+			return errors.New("ID is not proper")
+		}
+		if proData.Name == "" {
+			return errors.New("Product Name can't be empty")
+		}
 	}
 	return nil
 }

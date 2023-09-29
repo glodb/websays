@@ -3,7 +3,6 @@ package basefunctions
 import (
 	"database/sql"
 	"errors"
-	"log"
 	"reflect"
 	"strings"
 	"websays/database/baseconnections"
@@ -105,18 +104,64 @@ func (u *MySqlFunctions) FindOne(dbName basetypes.DBName, collectionName basetyp
 		values = append(values, val)
 	}
 
-	query += whereClause
-	log.Println(query, values)
+	query += whereClause + " LIMIT 1"
 	rows, err := conn.Query(query, values...)
 
 	return rows, err
 }
-func (u *MySqlFunctions) UpdateOne(dbName basetypes.DBName, collectionName basetypes.CollectionName, query string, data interface{}, upsert bool) error {
+func (u *MySqlFunctions) UpdateOne(dbName basetypes.DBName, collectionName basetypes.CollectionName, query interface{}, data interface{}, upsert bool) error {
 	conn := baseconnections.GetInstance().GetConnection(basetypes.MYSQL).GetDB(basetypes.MYSQL).(*sql.DB)
-	_, err := conn.Exec(query, data.([]interface{})...)
+	dbQuery := "UPDATE " + string(collectionName) + " SET "
+
+	values := make([]interface{}, 0)
+	dataMap := data.(map[string]interface{})
+	setClause := ""
+
+	for key, val := range dataMap {
+		if setClause != "" {
+			setClause += "," + key + "= ? "
+		} else {
+			setClause += key + "= ?"
+		}
+		values = append(values, val)
+	}
+
+	condition := query.(map[string]interface{})
+	whereClause := ""
+	for key, val := range condition {
+		if whereClause != "" {
+			whereClause += " AND "
+		} else {
+			whereClause += " WHERE "
+		}
+		whereClause += key + "= ? "
+		values = append(values, val)
+	}
+
+	dbQuery += setClause + whereClause + " LIMIT 1"
+	_, err := conn.Exec(dbQuery, values...)
 	return err
 }
-func (u *MySqlFunctions) DeleteOne(dbName basetypes.DBName, collectionName basetypes.CollectionName, query interface{}) error {
-	log.Println("Unimplemented DeleteOne MySql")
-	return nil
+func (u *MySqlFunctions) DeleteOne(dbName basetypes.DBName, collectionName basetypes.CollectionName, cond interface{}) error {
+	conn := baseconnections.GetInstance().GetConnection(basetypes.MYSQL).GetDB(basetypes.MYSQL).(*sql.DB)
+	condition := cond.(map[string]interface{})
+	query := "DELETE FROM " + string(collectionName)
+	whereClause := ""
+	values := make([]interface{}, 0)
+
+	for key, val := range condition {
+		if whereClause != "" {
+			whereClause += " AND "
+		} else {
+			whereClause += " WHERE "
+		}
+		whereClause += key + "= ? "
+		values = append(values, val)
+	}
+
+	query += whereClause + " LIMIT 1"
+
+	_, err := conn.Query(query, values...)
+
+	return err
 }

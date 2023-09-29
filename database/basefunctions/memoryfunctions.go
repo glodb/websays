@@ -52,7 +52,7 @@ func (u *MemoryFunctions) FindOne(dbName basetypes.DBName, collectionName basety
 		return nil, errors.New("Not found")
 	}
 }
-func (u *MemoryFunctions) UpdateOne(dbName basetypes.DBName, collectionName basetypes.CollectionName, query string, data interface{}, upsert bool) error {
+func (u *MemoryFunctions) UpdateOne(dbName basetypes.DBName, collectionName basetypes.CollectionName, query interface{}, data interface{}, upsert bool) error {
 	u.lock.Lock()
 	defer u.lock.Unlock()
 
