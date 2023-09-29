@@ -61,7 +61,6 @@ func (u *FileFunctions) writeRunningNumber(filePath string, number int) error {
 func (u *FileFunctions) GetNextID() int {
 	u.runningLock.Lock()
 	defer u.runningLock.Unlock()
-
 	filePath := config.GetInstance().FilePath + "/" + config.GetInstance().RunningFileName
 	u.id, _ = u.readRunningNumber(filePath)
 	u.id++
@@ -74,6 +73,7 @@ func (u *FileFunctions) Add(dbName basetypes.DBName, collectionName basetypes.Co
 
 	filePath := config.GetInstance().FilePath + "/" + strconv.FormatInt(int64(idData.GetID()), 10) + "_" + string(collectionName)
 	// Use the os.Stat function to get file information
+
 	_, err := os.Stat(filePath)
 
 	if err == nil {

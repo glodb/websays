@@ -1,7 +1,6 @@
 package basecontrollers
 
 import (
-	"log"
 	"sync"
 	"websays/app/controllers"
 	"websays/app/validators"
@@ -48,7 +47,6 @@ func (c *controllersObject) GetController(controllerType string) (baseinterfaces
 func (c *controllersObject) RegisterControllers() {
 	localControllers := config.GetInstance().Controllers
 	for i := range localControllers {
-		log.Println(localControllers[i])
 		c.registerControllers(localControllers[i], true)
 	}
 }
@@ -67,7 +65,6 @@ func (c *controllersObject) registerControllers(key string, registerApis bool) {
 		funcs, _ = basefunctions.GetInstance().GetFunctions(basetypes.MYSQL, c.controllers[key].GetDBName())
 
 	}
-	log.Println(*funcs)
 	c.controllers[key].SetBaseFunctions(*funcs)
 	c.controllers[key].DoIndexing()
 	if registerApis {

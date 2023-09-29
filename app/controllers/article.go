@@ -84,6 +84,7 @@ func (art *Article) HandleReadArticle(w http.ResponseWriter, r *http.Request) {
 	article.ID = int(idInt)
 
 	data, err := art.FindOne(art.GetDBName(), art.GetCollectionName(), article)
+
 	if err != nil {
 		responses.GetInstance().WriteJsonResponse(w, r, responses.VALIDATION_FAILED, err, nil)
 		return

@@ -14,7 +14,7 @@ type BaseFucntionsInterface interface {
 	EnsureIndex(basetypes.DBName, basetypes.CollectionName, interface{}) error
 	Add(basetypes.DBName, basetypes.CollectionName, interface{}) error
 	FindOne(basetypes.DBName, basetypes.CollectionName, interface{}) (interface{}, error)
-	UpdateOne(dbName basetypes.DBName, collectionName basetypes.CollectionName, query string, data interface{}, upsert bool) error
+	UpdateOne(dbName basetypes.DBName, collectionName basetypes.CollectionName, query interface{}, data interface{}, upsert bool) error
 	DeleteOne(dbName basetypes.DBName, collectionName basetypes.CollectionName, query interface{}) error
 	GetNextID() int
 }
