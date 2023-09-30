@@ -2,7 +2,7 @@ package baseconnections
 
 import "websays/database/basetypes"
 
-//Keeping it open for multiple db or own db connections in microservices
+//File connection does not require an active connection like dbs
 type FileConnection struct {
 	folderName string
 }
