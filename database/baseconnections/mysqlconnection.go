@@ -8,13 +8,15 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
-//Keeping it open for multiple db or own db connections in microservices
+// MysqlConnection represents a MySQL database connection.
 type MysqlConnection struct {
 	dbName string
 	db     *sql.DB
 }
 
-func (u *MysqlConnection) CreateConnection() (ConntectionInterface, error) {
+// CreateConnection creates a MySQL database connection using the configuration values from the singleton config instance.
+// It returns the created connection and any error encountered during connection setup.
+func (u *MysqlConnection) CreateConnection() (ConnectionInterface, error) {
 	dsn := config.GetInstance().Database.Username + ":" + config.GetInstance().Database.Password + "@tcp(" + config.GetInstance().Database.Host + ":" + config.GetInstance().Database.Port + ")/" + config.GetInstance().Database.DBName
 	db, err := sql.Open("mysql", dsn)
 
@@ -26,6 +28,7 @@ func (u *MysqlConnection) CreateConnection() (ConntectionInterface, error) {
 	return u, nil
 }
 
+// GetDB returns the MySQL database instance associated with this connection.
 func (u *MysqlConnection) GetDB(dbType basetypes.DbType) interface{} {
 	return u.db
 }

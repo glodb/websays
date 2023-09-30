@@ -5,25 +5,27 @@ import (
 	"websays/database/basetypes"
 )
 
+// dbConnections is a struct representing the database connections manager.
 type dbConnections struct {
-	dbconnections map[basetypes.DbType]*ConntectionInterface
+	dbconnections map[basetypes.DbType]*ConnectionInterface
 }
 
 var instance *dbConnections
 var once sync.Once
 
-//Singleton. Returns a single object of Factory
-//This is pure lazy factory, doesnot even create db connection till dbname is specifically passed
+// GetInstance returns a single instance of the dbConnections manager.
+// It follows the lazy initialization approach, creating database connections only when needed.
 func GetInstance() *dbConnections {
-	// var instance
 	once.Do(func() {
 		instance = &dbConnections{}
-		instance.dbconnections = make(map[basetypes.DbType]*ConntectionInterface)
+		instance.dbconnections = make(map[basetypes.DbType]*ConnectionInterface)
 	})
 	return instance
 }
 
-func (u *dbConnections) GetConnection(dbType basetypes.DbType) ConntectionInterface {
+// GetConnection retrieves or creates a connection based on the specified database type.
+// It returns the corresponding connection interface.
+func (u *dbConnections) GetConnection(dbType basetypes.DbType) ConnectionInterface {
 	if connection, ok := u.dbconnections[dbType]; ok {
 		return *connection
 	}
@@ -39,7 +41,7 @@ func (u *dbConnections) GetConnection(dbType basetypes.DbType) ConntectionInterf
 			return *u.dbconnections[dbType]
 		}
 	case basetypes.FILE:
-		{ //Allowing multiple db connections, test didn't ask but just using factory
+		{ // Allowing file connections
 			connection := FileConnection{}
 			fileconnector, err := connection.CreateConnection()
 			if err != nil {
@@ -49,7 +51,7 @@ func (u *dbConnections) GetConnection(dbType basetypes.DbType) ConntectionInterf
 			return *u.dbconnections[dbType]
 		}
 	case basetypes.MEMORY:
-		{ //Allowing multiple db connections, test didn't ask but just using factory
+		{ // Allowing memory connection
 			connection := MemoryConnection{}
 			memoryconnector, err := connection.CreateConnection()
 			if err != nil {

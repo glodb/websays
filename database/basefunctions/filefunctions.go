@@ -12,22 +12,27 @@ import (
 	"websays/httpHandler/basemodels"
 )
 
+// FileFunctions implements the BaseFucntionsInterface for file-based storage.
+// It provides methods for ensuring indexes, adding, finding, updating, and deleting data.
 type FileFunctions struct {
-	runningLock sync.Mutex
-	filesLock   sync.Mutex
-	id          int
+	runningLock sync.Mutex // Mutex for ensuring thread safety when accessing running number
+	filesLock   sync.Mutex // Mutex for ensuring thread safety when accessing files
+	id          int        // The running ID
 }
 
+// GetFunctions returns the FileFunctions instance as a BaseFucntionsInterface.
 func (u *FileFunctions) GetFunctions() BaseFucntionsInterface {
-	//TODO: read id from file
 	return u
 }
 
+// EnsureIndex ensures an index for the specified database and collection.
+// File storage does not require index creation, so this method does nothing.
 func (u *FileFunctions) EnsureIndex(dbName basetypes.DBName, collectionName basetypes.CollectionName, data interface{}) error {
 	return nil
 }
 
-// Read the running number from a file
+// readRunningNumber reads the running number from a file.
+// It takes the filePath as a parameter and returns the running number and any error encountered.
 func (u *FileFunctions) readRunningNumber(filePath string) (int, error) {
 	// Read the content of the file
 	content, err := ioutil.ReadFile(filePath)
@@ -44,7 +49,8 @@ func (u *FileFunctions) readRunningNumber(filePath string) (int, error) {
 	return runningNumber, nil
 }
 
-// Write the running number to a file
+// writeRunningNumber writes the running number to a file.
+// It takes the filePath and the number to be written as parameters and returns any error encountered.
 func (u *FileFunctions) writeRunningNumber(filePath string, number int) error {
 	// Convert the number to a string
 	numberStr := strconv.Itoa(number)
@@ -58,6 +64,8 @@ func (u *FileFunctions) writeRunningNumber(filePath string, number int) error {
 	return nil
 }
 
+// GetNextID returns the next available ID for file-based storage.
+// It reads and increments the running number stored in a file and returns the updated ID.
 func (u *FileFunctions) GetNextID() int {
 	u.runningLock.Lock()
 	defer u.runningLock.Unlock()
@@ -68,16 +76,18 @@ func (u *FileFunctions) GetNextID() int {
 	return u.id
 }
 
+// Add adds data to the file-based storage.
+// It takes the dbName, collectionName, and data to be added as parameters and returns any error encountered.
 func (u *FileFunctions) Add(dbName basetypes.DBName, collectionName basetypes.CollectionName, data interface{}) error {
 	idData := data.(basemodels.BaseModels)
 
 	filePath := config.GetInstance().FilePath + "/" + strconv.FormatInt(int64(idData.GetID()), 10) + "_" + string(collectionName)
-	// Use the os.Stat function to get file information
 
+	// Check if the file with the same ID already exists
 	_, err := os.Stat(filePath)
 
 	if err == nil {
-		return errors.New("Id already exists")
+		return errors.New("ID already exists")
 	}
 
 	u.filesLock.Lock()
@@ -94,19 +104,24 @@ func (u *FileFunctions) Add(dbName basetypes.DBName, collectionName basetypes.Co
 
 	err = encoder.Encode(data)
 	if err != nil {
-		return errors.New("Error encoding json")
+		return errors.New("Error encoding JSON")
 	}
 	return nil
 }
+
+// FindOne finds data in the file-based storage by ID.
+// It takes the dbName, collectionName, and a data structure to store the result as parameters.
+// It returns the found data and any error encountered.
 func (u *FileFunctions) FindOne(dbName basetypes.DBName, collectionName basetypes.CollectionName, data interface{}) (interface{}, error) {
 	idData := data.(basemodels.BaseModels)
 
 	filePath := config.GetInstance().FilePath + "/" + strconv.FormatInt(int64(idData.GetID()), 10) + "_" + string(collectionName)
-	// Use the os.Stat function to get file information
+
+	// Check if the file with the specified ID exists
 	_, err := os.Stat(filePath)
 
 	if err != nil {
-		return nil, errors.New("Id not found")
+		return nil, errors.New("ID not found")
 	}
 
 	u.filesLock.Lock()
@@ -123,20 +138,24 @@ func (u *FileFunctions) FindOne(dbName basetypes.DBName, collectionName basetype
 
 	err = decoder.Decode(&data)
 	if err != nil {
-		return nil, errors.New("Error decoding json")
+		return nil, errors.New("Error decoding JSON")
 	}
 
 	return data, nil
 }
+
+// UpdateOne updates data in the file-based storage by ID.
+// It takes the dbName, collectionName, query, data, and upsert flag as parameters and returns any error encountered.
 func (u *FileFunctions) UpdateOne(dbName basetypes.DBName, collectionName basetypes.CollectionName, query interface{}, data interface{}, upsert bool) error {
 	idData := data.(basemodels.BaseModels)
 
 	filePath := config.GetInstance().FilePath + "/" + strconv.FormatInt(int64(idData.GetID()), 10) + "_" + string(collectionName)
-	// Use the os.Stat function to get file information
+
+	// Check if the file with the specified ID exists
 	_, err := os.Stat(filePath)
 
 	if err != nil {
-		return errors.New("Id not found")
+		return errors.New("ID not found")
 	}
 
 	u.filesLock.Lock()
@@ -153,19 +172,23 @@ func (u *FileFunctions) UpdateOne(dbName basetypes.DBName, collectionName basety
 
 	err = encoder.Encode(data)
 	if err != nil {
-		return errors.New("Error encoding json")
+		return errors.New("Error encoding JSON")
 	}
 	return nil
 }
+
+// DeleteOne deletes data from the file-based storage by ID.
+// It takes the dbName, collectionName, and data to be deleted as parameters and returns any error encountered.
 func (u *FileFunctions) DeleteOne(dbName basetypes.DBName, collectionName basetypes.CollectionName, data interface{}) error {
 	idData := data.(basemodels.BaseModels)
 
 	filePath := config.GetInstance().FilePath + "/" + strconv.FormatInt(int64(idData.GetID()), 10) + "_" + string(collectionName)
-	// Use the os.Stat function to get file information
+
+	// Check if the file with the specified ID exists
 	_, err := os.Stat(filePath)
 
 	if err != nil {
-		return errors.New("Id not found")
+		return errors.New("ID not found")
 	}
 
 	u.filesLock.Lock()
@@ -174,7 +197,7 @@ func (u *FileFunctions) DeleteOne(dbName basetypes.DBName, collectionName basety
 	err = os.Remove(filePath)
 
 	if err != nil {
-		return errors.New("file not found")
+		return errors.New("File not found")
 	}
 	return nil
 }

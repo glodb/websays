@@ -80,6 +80,26 @@ func (u *Responses) getResponse(code int) map[string]interface{} {
 	return message
 }
 
+// WriteJsonResponse writes a JSON response to the HTTP response writer based on the provided parameters.
+// It sets the appropriate HTTP status code, content type, and includes data or error information in the response.
+//
+// Parameters:
+//   - w: The http.ResponseWriter to which the JSON response will be written.
+//   - r: The *http.Request containing information about the incoming request.
+//   - code: The HTTP status code to be set in the response.
+//   - err: An optional error to be included in the response if applicable. If nil, no error is included.
+//   - data: An optional data payload to be included in the response if applicable. If nil, no data is included.
+//
+// Note:
+//   - The 'err' parameter is used to indicate if there is an error associated with the response, and it affects the
+//     HTTP status code. If 'err' is not nil, the status code is set to StatusNotAcceptable (406); otherwise, it's
+//     set to StatusOK (200).
+//   - The response format is JSON with appropriate headers.
+//   - If encoding the JSON response encounters an error, it responds with an internal server error (HTTP status 500).
+//
+// Example Usage:
+//   Responses{}.WriteJsonResponse(w, r, http.StatusOK, nil, responseData)
+//   Responses{}.WriteJsonResponse(w, r, http.StatusNotAcceptable, validationError, nil)
 func (u *Responses) WriteJsonResponse(w http.ResponseWriter, r *http.Request, code int, err error, data interface{}) {
 	// urlPath := r.URL
 	returnMap := u.getResponse(code)

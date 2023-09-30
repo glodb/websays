@@ -2,12 +2,12 @@ package baseconnections
 
 import "websays/database/basetypes"
 
-//Keeping it open for multiple db or own db connections in microservices
+//File connection does not require an active connection like dbs
 type MemoryConnection struct {
 	folderName string
 }
 
-func (u *MemoryConnection) CreateConnection() (ConntectionInterface, error) {
+func (u *MemoryConnection) CreateConnection() (ConnectionInterface, error) {
 	return nil, nil
 }
 

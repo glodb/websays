@@ -7,7 +7,7 @@ type FileConnection struct {
 	folderName string
 }
 
-func (u *FileConnection) CreateConnection() (ConntectionInterface, error) {
+func (u *FileConnection) CreateConnection() (ConnectionInterface, error) {
 	return nil, nil
 }
 

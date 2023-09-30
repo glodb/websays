@@ -13,12 +13,13 @@ import (
 var instance *controllersObject
 var once sync.Once
 
-// Controllers struct
+// controllersObject is a singleton factory responsible for creating and managing controller instances.
 type controllersObject struct {
 	controllers map[string]baseinterfaces.Controller
 }
 
-// Singleton. Returns a single object of Factory
+// GetInstance returns a single instance of the controllersObject.
+// This function ensures that only one instance of the controllersObject is created and shared across the application.
 func GetInstance() *controllersObject {
 	// var instance
 	once.Do(func() {
@@ -28,7 +29,9 @@ func GetInstance() *controllersObject {
 	return instance
 }
 
-// createController is a factory to return the appropriate controller
+// GetController retrieves or creates a controller instance based on the provided controllerType.
+// If the controller with the specified type exists, it is retrieved from the map. Otherwise, it is created and registered.
+// It returns the Controller interface and an error if the controller cannot be found or instantiated.
 func (c *controllersObject) GetController(controllerType string) (baseinterfaces.Controller, error) {
 	if _, ok := c.controllers[controllerType]; ok {
 		return c.controllers[controllerType], nil
@@ -39,10 +42,9 @@ func (c *controllersObject) GetController(controllerType string) (baseinterfaces
 }
 
 /**
-*To all developers are future me,
-*Although this is lazy flyweight factory it doesn't work as lazy factory for web server
-*It will register all the controllers defined in the config for web but it will still be flyweight
-*Don't call the RegisterControllers if its not web
+ * Although this is a lazy flyweight factory, it doesn't work as a lazy factory for web servers.
+ * It will register all the controllers defined in the config for web, but it will still be flyweight.
+ * Don't call the RegisterControllers method if it's not intended for web use.
  */
 func (c *controllersObject) RegisterControllers() {
 	localControllers := config.GetInstance().Controllers
@@ -51,6 +53,8 @@ func (c *controllersObject) RegisterControllers() {
 	}
 }
 
+// registerControllers creates and registers a specific controller based on the provided key.
+// It sets the controller's base functions, performs indexing, and registers APIs if needed.
 func (c *controllersObject) registerControllers(key string, registerApis bool) {
 	var funcs *basefunctions.BaseFucntionsInterface
 	switch key {
@@ -63,7 +67,6 @@ func (c *controllersObject) registerControllers(key string, registerApis bool) {
 	case Product:
 		c.controllers[key] = &controllers.Product{BaseControllerFactory: c, ValidatorInterface: &validators.ProductValidator{}}
 		funcs, _ = basefunctions.GetInstance().GetFunctions(basetypes.MYSQL, c.controllers[key].GetDBName())
-
 	}
 	c.controllers[key].SetBaseFunctions(*funcs)
 	c.controllers[key].DoIndexing()

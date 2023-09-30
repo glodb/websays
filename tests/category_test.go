@@ -82,7 +82,7 @@ func TestFindCategory(t *testing.T) {
 	defer server.Close()
 
 	// Generate a valid article ID (replace with your logic to generate an ID)
-	articleID := "2"
+	articleID := "16"
 
 	// Create the URL with the article ID
 	url := server.URL + "/api/readArticle/" + articleID
@@ -133,7 +133,7 @@ func TestDeleteCategory(t *testing.T) {
 	defer server.Close()
 
 	// Generate a valid article ID (replace with your logic to generate an ID)
-	articleID := "4"
+	articleID := "6"
 
 	// Create the URL with the article ID
 	url := server.URL + "/api/deleteArticle/" + articleID
@@ -179,7 +179,7 @@ func TestUpdateCategory(t *testing.T) {
 	// Create a sample JSON payload
 	requestData := map[string]interface{}{
 		"name": "updated",
-		"id":   8,
+		"id":   16,
 	}
 
 	// Convert the JSON payload to a byte slice
