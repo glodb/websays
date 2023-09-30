@@ -8,8 +8,8 @@ import (
 	"strconv"
 	"sync"
 	"websays/config"
-	"websays/database/basemodels"
 	"websays/database/basetypes"
+	"websays/httpHandler/basemodels"
 )
 
 type FileFunctions struct {

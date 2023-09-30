@@ -4,8 +4,8 @@ import (
 	"errors"
 	"strconv"
 	"sync"
-	"websays/database/basemodels"
 	"websays/database/basetypes"
+	"websays/httpHandler/basemodels"
 )
 
 var mapInitiater sync.Once

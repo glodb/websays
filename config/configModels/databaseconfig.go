@@ -1,5 +1,6 @@
 package configModels
 
+//Structure for reading database config
 type DatabaseConfig struct {
 	Host     string `json:"host"`
 	Port     string `json:"port"`
