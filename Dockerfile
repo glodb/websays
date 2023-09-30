@@ -1,17 +1,31 @@
-# Use an official Golang runtime as a parent image
-FROM golang:latest
+FROM golang:alpine as build_base
 
-# Set the working directory inside the container
+RUN apk add --no-cache git
+RUN apk add build-base
+
+# Set the Current Working Directory inside the container
 WORKDIR /app
 
-# Copy the current directory contents into the container at /app
+# We want to populate the module cache based on the go.{mod,sum} files.
+COPY go.mod .
+COPY go.sum .
+
+RUN go mod download
+
 COPY . .
 
-# Build the Go application
-RUN go build -o main .
+# Build the Go app
+RUN go build -mod=mod -o ./main .
 
-# Expose port 8080 for the Go application to listen on
+FROM alpine:latest
+
+WORKDIR /app
+
+COPY --from=build_base /app/setup /app/setup
+COPY --from=build_base /app/sso /app/
+
+# This container exposes port 8080 to the outside world
 EXPOSE 8080
 
-# Command to run the Go application
-CMD ["./main"]
+# Run the binary program produced by `go install`
+ENTRYPOINT ["./main"]
