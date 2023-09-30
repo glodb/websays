@@ -38,16 +38,16 @@ func (u *MemoryFunctions) GetNextID() int {
 }
 
 // Add adds data to the in-memory data store.
-func (u *MemoryFunctions) Add(dbName basetypes.DBName, collectionName basetypes.CollectionName, data interface{}) error {
+func (u *MemoryFunctions) Add(dbName basetypes.DBName, collectionName basetypes.CollectionName, data interface{}) (int, error) {
 	idData := data.(basemodels.BaseModels)
 	u.lock.Lock()
 	defer u.lock.Unlock()
 	key := strconv.FormatInt(int64(idData.GetID()), 10) + "_" + string(collectionName)
 	if _, ok := u.data[key]; ok {
-		return errors.New("ID already exists")
+		return 0, errors.New("ID already exists")
 	}
 	u.data[key] = idData
-	return nil
+	return 0, nil
 }
 
 // FindOne retrieves data from the in-memory data store by ID.

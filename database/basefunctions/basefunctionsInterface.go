@@ -26,7 +26,7 @@ type BaseFucntionsInterface interface {
 	//   - collectionName: The name of the collection.
 	//   - data: The data to be inserted.
 	// Returns an error if the operation fails.
-	Add(dbName basetypes.DBName, collectionName basetypes.CollectionName, data interface{}) error
+	Add(dbName basetypes.DBName, collectionName basetypes.CollectionName, data interface{}) (int, error)
 
 	// FindOne retrieves a single document from a collection in the database based on the provided query.
 	// Parameters:

@@ -78,7 +78,7 @@ func (u *FileFunctions) GetNextID() int {
 
 // Add adds data to the file-based storage.
 // It takes the dbName, collectionName, and data to be added as parameters and returns any error encountered.
-func (u *FileFunctions) Add(dbName basetypes.DBName, collectionName basetypes.CollectionName, data interface{}) error {
+func (u *FileFunctions) Add(dbName basetypes.DBName, collectionName basetypes.CollectionName, data interface{}) (int, error) {
 	idData := data.(basemodels.BaseModels)
 
 	filePath := config.GetInstance().FilePath + "/" + strconv.FormatInt(int64(idData.GetID()), 10) + "_" + string(collectionName)
@@ -87,7 +87,7 @@ func (u *FileFunctions) Add(dbName basetypes.DBName, collectionName basetypes.Co
 	_, err := os.Stat(filePath)
 
 	if err == nil {
-		return errors.New("ID already exists")
+		return 0, errors.New("ID already exists")
 	}
 
 	u.filesLock.Lock()
@@ -95,7 +95,7 @@ func (u *FileFunctions) Add(dbName basetypes.DBName, collectionName basetypes.Co
 
 	file, err := os.Create(filePath)
 	if err != nil {
-		return errors.New("Error opening file path")
+		return 0, errors.New("Error opening file path")
 	}
 	defer file.Close()
 
@@ -104,9 +104,9 @@ func (u *FileFunctions) Add(dbName basetypes.DBName, collectionName basetypes.Co
 
 	err = encoder.Encode(data)
 	if err != nil {
-		return errors.New("Error encoding JSON")
+		return 0, errors.New("Error encoding JSON")
 	}
-	return nil
+	return 0, nil
 }
 
 // FindOne finds data in the file-based storage by ID.

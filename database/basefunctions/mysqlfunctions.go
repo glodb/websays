@@ -3,6 +3,7 @@ package basefunctions
 import (
 	"database/sql"
 	"errors"
+	"log"
 	"reflect"
 	"strings"
 	"websays/database/baseconnections"
@@ -58,7 +59,7 @@ func (u *MySqlFunctions) GetNextID() int {
 // Add inserts data into the MySQL database.
 // It takes the database name, collection name, and data interface to be inserted.
 // This function dynamically generates an SQL INSERT statement based on the data interface and inserts the data.
-func (u *MySqlFunctions) Add(dbName basetypes.DBName, collectionName basetypes.CollectionName, data interface{}) error {
+func (u *MySqlFunctions) Add(dbName basetypes.DBName, collectionName basetypes.CollectionName, data interface{}) (int, error) {
 	conn := baseconnections.GetInstance().GetConnection(basetypes.MYSQL).GetDB(basetypes.MYSQL).(*sql.DB)
 	query := "INSERT INTO " + string(collectionName)
 
@@ -66,7 +67,7 @@ func (u *MySqlFunctions) Add(dbName basetypes.DBName, collectionName basetypes.C
 	dataType := dataValue.Type()
 
 	if dataType.Kind() != reflect.Struct {
-		return errors.New("Required a struct for data")
+		return 0, errors.New("Required a struct for data")
 	}
 
 	var columns []string
@@ -91,8 +92,9 @@ func (u *MySqlFunctions) Add(dbName basetypes.DBName, collectionName basetypes.C
 	query += "(" + strings.Join(columns, ", ") + ")"
 	query += " VALUES(" + strings.Join(placeholders, ", ") + ")"
 
-	_, err := conn.Exec(query, values...)
-	return err
+	res, err := conn.Exec(query, values...)
+	lastId, _ := res.LastInsertId()
+	return int(lastId), err
 }
 
 // FindOne retrieves data from the MySQL database based on a condition.
@@ -117,7 +119,8 @@ func (u *MySqlFunctions) FindOne(dbName basetypes.DBName, collectionName basetyp
 		values = append(values, val)
 	}
 
-	query += whereClause + " LIMIT 1"
+	query += whereClause
+	log.Println(query, values)
 	rows, err := conn.Query(query, values...)
 
 	return rows, err

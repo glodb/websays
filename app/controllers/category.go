@@ -118,7 +118,7 @@ func (cat *Category) HandleCreateCategory(w http.ResponseWriter, r *http.Request
 	category.ID = cat.GetNextID()
 
 	// Call the underlying file controller method
-	err = cat.Add(cat.GetDBName(), cat.GetCollectionName(), category)
+	_, err = cat.Add(cat.GetDBName(), cat.GetCollectionName(), category)
 	if err != nil {
 		responses.GetInstance().WriteJsonResponse(w, r, responses.VALIDATION_FAILED, err, nil)
 		return

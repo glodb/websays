@@ -7,7 +7,7 @@
         "dbname": "websays"
     },
     "server": {
-        "address": "localhost",
+        "address": "0.0.0.0",
         "port": "8080"
       },
     "controllers": ["Article", "Category", "Product"],

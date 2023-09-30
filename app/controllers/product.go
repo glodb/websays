@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	"errors"
+	"log"
 	"net/http"
 	"strconv"
 	"websays/app/models"
@@ -110,7 +111,7 @@ func (pro *Product) HandleCreateProduct(w http.ResponseWriter, r *http.Request) 
 	}
 
 	// Calling the Add method for the MySQL controller
-	err = pro.Add(pro.GetDBName(), pro.GetCollectionName(), product)
+	product.ID, err = pro.Add(pro.GetDBName(), pro.GetCollectionName(), product)
 	if err != nil {
 		responses.GetInstance().WriteJsonResponse(w, r, responses.VALIDATION_FAILED, err, nil)
 		return
@@ -161,12 +162,15 @@ func (pro *Product) HandleReadProduct(w http.ResponseWriter, r *http.Request) {
 	// Reading and parsing rows
 	for rows.Next() {
 		err = rows.Scan(&product.ID, &product.Name)
+		rowsCount++
 	}
+	log.Println(err)
 	if err != nil {
 		responses.GetInstance().WriteJsonResponse(w, r, responses.VALIDATION_FAILED, err, nil)
 		return
 	}
 
+	log.Println(rowsCount)
 	if rowsCount == 0 {
 		responses.GetInstance().WriteJsonResponse(w, r, responses.NO_PRDUCT_FOUND, errors.New("No Product found"), nil)
 		return

@@ -116,7 +116,7 @@ func (art *Article) HandleAddArticle(w http.ResponseWriter, r *http.Request) {
 	article.ID = art.GetNextID()
 
 	// Add the article to the underlying memory controller
-	err = art.Add(art.GetDBName(), art.GetCollectionName(), article)
+	_, err = art.Add(art.GetDBName(), art.GetCollectionName(), article)
 	if err != nil {
 		responses.GetInstance().WriteJsonResponse(w, r, responses.VALIDATION_FAILED, err, nil)
 		return
