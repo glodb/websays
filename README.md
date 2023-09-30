@@ -56,7 +56,7 @@ The project has a well-organized folder structure that separates different compo
 - **responses**: Handles HTTP responses and defines response codes.
 
 ### tests
-- This folder can be used for storing test cases and test-related files, ensuring the reliability of the application.
+- This folder is used for storing test cases and test-related files, ensuring the reliability of the application.
 
 ## Project Overview
 
